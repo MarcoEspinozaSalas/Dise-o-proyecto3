@@ -1,0 +1,129 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title style="color :#00FFB3;">Lobby</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button [routerLink]="['/friends']">
+        <ion-icon slot="icon-only" md="people-outline"></ion-icon>
+      </ion-button>
+      <ion-button [routerLink]="['/chat']">
+        <ion-icon slot="icon-only" md="chatbubbles-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="!toCreate && !toPlay && !toSpectate">
+  <ion-fab horizontal="center" vertical="center" slot="fixed">
+    <ion-fab-button color="light">
+      <ion-icon name="share"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button class="options" color="primary" (click)="goToPlay()">
+        <p class="textIcon">Join</p>
+        <ion-icon class="test" name="log-in-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+    <ion-fab-list side="end">
+      <ion-fab-button class="options" color="primary">
+        <p class="textIcon">Stats</p>
+        <ion-icon class="test" name="stats-chart"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+    <ion-fab-list side="bottom">
+      <ion-fab-button class="options" color="primary" (click)="goToSpectate()">
+        <p class="textIcon">Spectate</p>
+        <ion-icon class="test" name="eye-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+    <ion-fab-list side="start">
+      <ion-fab-button class="options" color="primary" (click)="goToCreate()">
+        <p class="textIcon">Create</p>
+        <ion-icon class="test" name="create-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+</ion-content>
+
+<ion-content *ngIf="toCreate" class="ion-padding" [scrollEvents]="true">
+  <h3>Create new game</h3>
+  <ion-button (click)=" createNewGame()" expand="block">
+    Create
+    <ion-icon slot="end" name="add-outline"></ion-icon>
+  </ion-button>
+  <p *ngIf="game.idGame!=undefined"> ID de juego generada: </p>
+  <ion-select *ngIf="game.idGame!=undefined" placeholder="Select One" [(ngModel)]="id">
+    <ion-select-option>{{game.idGame}}</ion-select-option>
+  </ion-select>
+  <h3 *ngIf="game.idGame!=undefined && friendList != undefined && id != '' && testFL?.length > 0 ">Select a player to play with</h3>
+
+  <ion-select *ngIf="game.idGame!=undefined && friendList != undefined  && id != '' && testFL?.length > 0 " lines="full" [(ngModel)]="uid" placeholder="See players" (click)="refreshPlayers()">
+    <ion-select-option *ngFor="let item of friendList">{{item.displayName}}</ion-select-option>
+  </ion-select>
+
+  <p *ngIf="testFL?.length < 1">No tienes amigos: Ve al icono arriba a la derecha y crea una lista de amigos</p>
+
+  <ion-col *ngIf="game.idGame!=undefined && friendList != undefined  && id != '' && testFL?.length > 0" class="ion-align-self-start">
+    <div class="col text-center">
+      <ion-button (click)="guardar()" expand="block">
+        Add player
+        <ion-icon slot="end" name="add-outline"></ion-icon>
+      </ion-button>
+    </div>
+
+    <h3>Select gamemode</h3>
+    <ion-button (click)="enter()" expand="block">
+      Single Player
+      <ion-icon name="arrow-forward-sharp"></ion-icon>
+    </ion-button>
+    <ion-button *ngIf="game.idGame!=undefined && friendList != undefined  && isPlayerSelected && testFL?.length > 0" (click)="enter()" expand="block">
+      MultiPlayer
+      <ion-icon name="arrow-forward-sharp"></ion-icon>
+    </ion-button>
+  </ion-col>
+  <ion-button (click)="reset()">Back<ion-icon slot="start" name="arrow-back-circle-outline"></ion-icon>
+  </ion-button>
+</ion-content>
+
+<ion-content *ngIf="toPlay" class="ion-padding" [scrollEvents]="true">
+  <h3>Join to game game</h3>
+  <ion-button (click)="getPlayerGames()">Ver juegos</ion-button>
+  <p *ngIf="conts"> ID de juego: </p>
+  <ion-select *ngIf="conts"[(ngModel)]="idJoinGame">
+    <ion-select-option *ngFor="let item of listGames">{{item}}</ion-select-option>
+  </ion-select>
+  <ion-button *ngIf="conts"  class="backButton" (click)="JoinGame()">
+    Join
+    <ion-icon slot="start" name="arrow-back-circle-outline"></ion-icon>
+  </ion-button>
+  <ion-button class="backButton" (click)="reset()">
+    Back
+    <ion-icon slot="start" name="arrow-back-circle-outline"></ion-icon>
+  </ion-button>
+</ion-content>
+
+<ion-content *ngIf="toSpectate" class="ion-padding" [scrollEvents]="true">
+  <h3>Join to game</h3>
+  <ion-button (click)="getAllPlayerGames()">Espectar juego</ion-button>
+  <p *ngIf="noconts"> ID de juego: </p>
+  <ion-select *ngIf="noconts" [(ngModel)]="idSpectate">
+    <ion-select-option *ngFor="let item of listAllGames">{{item}}</ion-select-option>
+  </ion-select>
+  <ion-button *ngIf="noconts"  class="backButton" (click)="enterGame()">
+    Spectate
+    <ion-icon slot="start" name="arrow-back-circle-outline"></ion-icon>
+  </ion-button>
+  <ion-button class="backButton" (click)="reset()">
+    Back
+    <ion-icon slot="start" name="arrow-back-circle-outline"></ion-icon>
+  </ion-button>
+</ion-content>
+<ion-footer class="ion-padding">
+  <hr>
+  <ion-button style="position: absolute; right: 6%; width: 40%" (click)="firebaseService.signOut()">Logout</ion-button>
+  <ion-button style="position: absolute; left: 6%; width: 40%" (click)="verID()">Ver ID</ion-button>
+  <br>
+  <br>
+</ion-footer>

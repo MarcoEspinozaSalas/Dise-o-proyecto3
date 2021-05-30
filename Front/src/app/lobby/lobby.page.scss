@@ -1,0 +1,71 @@
+a:hover {
+    background-color: yellow;
+  }
+  .item-input ion-label{
+    pointer-events:all!important;
+  }
+  .item-cover{
+    display:none;
+  }
+
+  hr {
+    display: block;
+    position: relative;
+    padding: 0;
+    margin: 8px auto;
+    height: 0;
+    width: 100%;
+    max-height: 0;
+    font-size: 1px;
+    line-height: 0;
+    clear: both;
+    border: none;
+    border-top: 1px solid #aaaaaa;
+    border-bottom: 1px solid #ffffff;
+ }
+
+ .tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 60px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  font-size: x-small;
+
+  /* Position the tooltip */
+  position: absolute;
+  left: 55%;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+ion-fab-button.options {
+  width: 60px;
+  height: 60px;
+}
+
+p.textIcon {
+  vertical-align: bottom;
+  display: inline-block;
+  margin-top: -5%;
+  position: absolute;
+}
+
+ion-icon.test {
+  vertical-align: top;
+  padding-top: 28%;
+  //margin-left: 4%;
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
