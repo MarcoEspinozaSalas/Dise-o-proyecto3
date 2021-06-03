@@ -31,7 +31,11 @@ const routes: Routes = [
   {
     path: 'friends',
     loadChildren: () => import('./friends/friends.module').then( m => m.FriendsPageModule)
+  },  {
+    path: 'friend-list',
+    loadChildren: () => import('./friend-list/friend-list.module').then( m => m.FriendListPageModule)
   },
+
  
 
 

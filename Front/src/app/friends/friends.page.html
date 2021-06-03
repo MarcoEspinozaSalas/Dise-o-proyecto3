@@ -6,55 +6,45 @@
     <ion-title style="color :#000000;">
       <strong>Create list</strong>
     </ion-title>
-    
+    <ion-buttons slot="primary">
+      <ion-button *ngIf="toFamily" [routerLink]="['/friend-list']">
+        <ion-icon slot="icon-only" md="people-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
   </ion-toolbar>
 </ion-header>|
 
 
-<ion-content  class="ion-padding" [scrollEvents]="true">
-
-  <form *ngIf="idFriendList == ''">
-    <ion-item lines="full">
-      <ion-label position="floating">List Name</ion-label>
-      <ion-input type="text" name="listName" [(ngModel)]="listName" required></ion-input>
-    </ion-item>
-
-    <ion-row>
-      <ion-col>
-        <ion-button type="submit" expand="block" (click)="createFL()">Create lista de amigos</ion-button>
-      </ion-col>
-    </ion-row>
-  </form>
-
-  <h4 *ngIf="listName != ''">Nombre de su lista de amigos: <br> <br>{{listName}}</h4>
-  <br>
-  <h4 *ngIf="idFriendList != ''"> Miembros de tu lista de amigos</h4>
-  <ion-select *ngIf="idFriendList != ''" interface="popover" lines="full" placeholder="Ver amigos" [(ngModel)]="idFriendToDelete">
-    <ion-select-option *ngFor="let item of friendList" value={{item.uid}}>{{item.displayName}}</ion-select-option>
-  </ion-select>
-
-  <ion-col *ngIf="idFriendList != ''" class="ion-align-self-start">
-    <div class="col text-center">
-      <ion-button (click)="deleteFriend()" expand="block">
-        Eliminar amigo
-        <ion-icon slot="end" name="trash-outline"></ion-icon>
-      </ion-button>
-    </div>
-  </ion-col>
-
-  <br>
-
-  <h4 *ngIf="idFriendList != ''"> Elije un usuario para agregar a tu lista de amigos</h4>
-  <ion-select *ngIf="idFriendList != ''" lines="full" placeholder="Ver usuarios" [(ngModel)]="idFriendToAdd">
-    <ion-select-option *ngFor="let item of allPlayers" value={{item.uid}}>{{item.displayName}}</ion-select-option>
-  </ion-select>
-
-  <ion-col *ngIf="idFriendList != ''" class="ion-align-self-start">
-    <div class="col text-center">
-      <ion-button (click)="addFriend()" expand="block">
-        Agregar amigo
-        <ion-icon slot="end" name="add-outline"></ion-icon>
-      </ion-button>
-    </div>
-  </ion-col>
+<ion-content  class="ion-padding" [scrollEvents]="true"  *ngIf="!toFamily">
+  <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+    <ion-fab-button color="light">
+      <ion-icon md="caret-up" ios="chevron-up-circle-outline"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button color="light" (click)="goFamily()">
+        <ion-icon name="people-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
 </ion-content>
+
+<ion-content *ngIf="toFamily" class="ion-padding" [scrollEvents]="true">
+
+  <p *ngIf="testFL?.length < 1">No tienes amigos: Ve al icono arriba a la derecha y crea una lista de amigos</p>
+  <h3>Agregar miembros</h3>
+  <ion-button *ngIf="friendList != undefined  && testFL?.length > 0">Miembros de la familia</ion-button>
+  <p *ngIf="friendList != undefined  && testFL?.length > 0"> Nombre de miembro: </p>
+  <ion-select *ngIf="friendList != undefined  && testFL?.length > 0 " lines="full" [(ngModel)]="uid" placeholder="See players" (click)="refreshPlayers()">
+    <ion-select-option *ngFor="let item of friendList">{{item.displayName}}</ion-select-option>
+  </ion-select>
+  <ion-button  *ngIf="friendList != undefined  && testFL?.length > 0" class="backButton">
+    Agregar miembro
+    <ion-icon slot="start" name="arrow-back-circle-outline"></ion-icon>
+  </ion-button>
+  <ion-button class="backButton" (click)="reset()">
+    Back
+    <ion-icon slot="start" name="arrow-back-circle-outline"></ion-icon>
+  </ion-button>
+</ion-content>
+
