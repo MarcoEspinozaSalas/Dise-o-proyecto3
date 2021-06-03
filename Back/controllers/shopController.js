@@ -10,6 +10,36 @@ firebase.initializeApp({
     databaseURL: 'https://fir-angular-auth-cdb4a-default-rtdb.firebaseio.com/'
 });
 
+function flatten(board) {
+    return board.reduce((results, row) => {
+        return results.concat(row)
+    }, [])
+}
+
+function listGenerator() {
+    const friendList = Array(0).fill(null).map(() => Array(0).fill(null))
+    return flatten(friendList);
+}
+
+async function getPlayerInfo(uid) {
+
+    var user;
+
+    try {
+        var pool = firebase.firestore();
+        await pool.collection('registeredUsers').where('uid', "==", uid).
+            get().then(snapshot => {
+                snapshot.forEach(async doc => {
+                    user = await doc.data()
+
+                })
+            });
+
+        return user;
+    } catch (err) {
+        return undefined;
+    }
+}
 
 async function saveInformation(uid, email, displayName) {
 
@@ -28,36 +58,54 @@ async function saveInformation(uid, email, displayName) {
     }
 }
 
-async function getPlayerInfo(uid) {
+router.post('/savePlayerInformation', async (req, res) => {
 
-    var user;
+    const uid = req.body.uid;
+    const displayName = req.body.displayName;
+    const email = req.body.email;
 
     try {
-        var pool = firebase.firestore();
-        await pool.collection('registered Users').where('uid', "==", uid).
-            get().then(snapshot => {
-                snapshot.forEach(async doc => {
-                    user = await doc.data()
 
-                })
+        var pool = firebase.firestore();
+        var alreadyExist = true;
+        var idFamily;
+        var listName;
+
+        await pool.collection('registeredUsers')
+            .get()
+            .then(snapshot => {
+                snapshot.forEach(async doc => {
+                    if (await doc.data().uid === uid) {
+                        alreadyExist = false;
+                    }
+                });
             });
 
-        return user;
+        await pool.collection('family')
+            .get()
+            .then(snapshot => {
+                snapshot.forEach(async doc => {
+                    if (await doc.data().listOwner.uid === uid) {
+                        idFamily = doc.id;
+                        listName = doc.data().listName;
+                    }
+                });
+            });
+
+        if (alreadyExist) {
+            await saveInformation(uid, email, displayName);
+        }
+
+        res.status(status.OK).json({ idFamily: idFamily, ListName: listName, success: 200 })
+
     } catch (err) {
-        return undefined;
+        res.status(status.INTERNAL_SERVER_ERROR).json({ error: err });
     }
-}
+});
+//crea la familia sin el id de la lista
+router.post('/createdF', async (req, res) => {
 
-
-//------------------------------------------------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------//
-//Lista de amigos
-//------------------------------------------------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------//
-/*
-router.post('/createdFL', async (req, res) => {
-
-    const listOwner = await getPlayerInfo(req.body.idListOwner)
+    const idFamilyOwner = await getPlayerInfo(req.body.idFamilyOwner)
     const listName = req.body.listName;
 
     var alreadyExist = false;
@@ -66,25 +114,27 @@ router.post('/createdFL', async (req, res) => {
 
         var db = firebase.firestore();
 
-        await db.collection('friendList')
+        await db.collection('family')
             .get()
             .then(snapshot => {
                 snapshot.forEach(async doc => {
-                    if (await doc.data().listOwner.uid === listOwner.uid) {
+                    if (await doc.data().idFamilyOwner.uid === idFamilyOwner.uid) {
                         alreadyExist = true;
                     }
                 });
             });
 
         if (!alreadyExist) {
-          db.collection('friendList').add({
-              listOwner: listOwner,
+          db.collection('family').add({
+              idFamilyOwner: idFamilyOwner,
               listName: listName,
-              friendList: FLGenerator()
+              members: listGenerator(),
+              idProductList: null
 
           }).then(response => {
-              res.status(status.OK).json({ idFriendList: response.id, ListName: listName});
+              res.status(status.OK).json({ idFamily: response.id, FamilyName: listName});
           }).catch(err => {
+              console.log(err);
               res.status(status.INTERNAL_SERVER_ERROR).json(err);
           });
         }
@@ -92,14 +142,14 @@ router.post('/createdFL', async (req, res) => {
           res.status(status.OK).json({ message: 'Already Exist' });
 
     } catch (err) {
+        console.log(err);
         res.status(status.INTERNAL_SERVER_ERROR).json({ error: err });
     }
 });
+//obtiene la lista en la info de la lista del dueño
+router.get('/getMemberListByOwner', async (req, res) => {
 
-
-router.get('/getFriendListByOwner', async (req, res) => {
-
-    const idListOwner = req.query.idListOwner;
+    const idFamilyOwner = req.query.idListOwner;
 
     try {
 
@@ -107,7 +157,7 @@ router.get('/getFriendListByOwner', async (req, res) => {
 
         var data = '';
 
-        db.collection('friendList').where('listOwner.uid', "==", idListOwner).get()
+        db.collection('family').where('idFamilyOwner.uid', "==", idFamilyOwner).get()
         .then(snapshot => {
           snapshot.forEach(async doc => {
             data = doc.data();
@@ -121,23 +171,21 @@ router.get('/getFriendListByOwner', async (req, res) => {
         res.status(status.INTERNAL_SERVER_ERROR).json({ error: err });
     }
 });
+//edita el nombre de la familia con el id
+router.put('/editFamily', async (req, res) => {
 
-
-
-router.put('/editFriendList', async (req, res) => {
-
-    const idList = req.body.idList;
+    const idFamily = req.body.idFamily;
     const listName = req.body.listName;
 
     try {
 
         var db = firebase.firestore();
 
-        db.collection('friendList').doc(idList).update({
+        db.collection('family').doc(idFamily).update({
             listName: listName
 
         }).then(response => {
-            res.status(status.OK).json({ idFriendList: response.id });
+            res.status(status.OK).json({ idFamily: response.id });
         }).catch(err => {
             res.status(status.INTERNAL_SERVER_ERROR).json(err);
         });
@@ -146,21 +194,131 @@ router.put('/editFriendList', async (req, res) => {
         res.status(status.INTERNAL_SERVER_ERROR).json({ error: err });
     }
 });
-
-
-router.put('/addFriend', async (req, res) => {
+//añade el id de la lista de productos al espacio de id de la familia
+router.put('/addProductListId', async (req, res) => {
     try {
 
-        const idList = req.body.idList;
-        const friend= await getPlayerInfo(req.body.idFriend)
+        const idFamily = req.body.idFamily;
+        const idProductList = req.body.idProductList
 
         var db = firebase.firestore();
 
-        let ref = db.collection('friendList').doc(idList);
+        db.collection('family').doc(idFamily).update({
+            idProductList: idProductList
+        }
+        ).then(response => {
+            res.status(status.OK).json({ success: 200 });
+        }).catch(err => {
+            res.status(status.INTERNAL_SERVER_ERROR).json(err);
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.status(status.INTERNAL_SERVER_ERROR).json({ error: err });
+    }
+});
+//añade un miembro a la familia
+router.put('/addMember', async (req, res) => {
+    try {
+
+        const idFamily = req.body.idFamily;
+        const member= await getPlayerInfo(req.body.idMember)
+
+        var db = firebase.firestore();
+
+        let ref = db.collection('family').doc(idFamily);
 
         let updateList = ref.update({
-            friendList: firebase.firestore.FieldValue.arrayUnion(friend)
+            members: firebase.firestore.FieldValue.arrayUnion(member)
+        }).then(response => {
+            res.status(status.OK).json({ success: 200 });
+        }).catch(err => {
+            res.status(status.INTERNAL_SERVER_ERROR).json(err);
+        });
 
+    } catch (err) {
+        res.status(status.INTERNAL_SERVER_ERROR).json({ error: err });
+    }
+});
+//remueve un miembro de la familia
+router.put('/removeMember', async (req, res) => {
+    try {
+
+        const idFamily = req.body.idFamily;
+        const member= await getPlayerInfo(req.body.idMember)
+
+        var db = firebase.firestore();
+
+        let ref = db.collection('family').doc(idFamily);
+
+        let updateList = ref.update({
+            members: firebase.firestore.FieldValue.arrayRemove(member)
+        }).then(response => {
+            res.status(status.OK).json({ success: 200 });
+        }).catch(err => {
+            res.status(status.INTERNAL_SERVER_ERROR).json(err);
+        });
+
+    } catch (err) {
+        res.status(status.INTERNAL_SERVER_ERROR).json({ error: err });
+    }
+});
+//crea una lista de productoos
+router.post('/createdList', async (req, res) => {
+
+    const idListOwner = await getPlayerInfo(req.body.idListOwner)
+    const listName = req.body.listName;
+
+    var alreadyExist = false;
+
+    try {
+
+        var db = firebase.firestore();
+
+        await db.collection('productList')
+            .get()
+            .then(snapshot => {
+                snapshot.forEach(async doc => {
+                    if (await doc.data().idListOwner.uid === idListOwner.uid) {
+                        alreadyExist = true;
+                    }
+                });
+            });
+
+        if (!alreadyExist) {
+          db.collection('productList').add({
+              idListOwner: idListOwner,
+              listName: listName,
+              products: listGenerator()
+
+          }).then(response => {
+              res.status(status.OK).json({ IdListOwner: response.id, ListName: listName, ListId: response.id });
+          }).catch(err => {
+              console.log(err);
+              res.status(status.INTERNAL_SERVER_ERROR).json(err);
+          });
+        }
+        else
+          res.status(status.OK).json({ message: 'Already Exist' });
+
+    } catch (err) {
+        console.log(err);
+        res.status(status.INTERNAL_SERVER_ERROR).json({ error: err });
+    }
+});
+//añade un producto a la lista de productos usando el id de la lista
+router.put('/addProduct', async (req, res) => {
+    try {
+
+        const idList = req.body.idList;
+        const proName= await req.body.proName
+
+        var db = firebase.firestore();
+
+        let ref = db.collection('productList').doc(idList);
+
+        let updateList = ref.update({
+            products: firebase.firestore.FieldValue.arrayUnion(proName)
         }).then(response => {
             res.status(status.OK).json({ success: 200 });
         }).catch(err => {
@@ -172,28 +330,6 @@ router.put('/addFriend', async (req, res) => {
     }
 });
 
-router.put('/removeFriend', async (req, res) => {
-    try {
 
-        const idList = req.body.idList;
-        const friend= await getPlayerInfo(req.body.idFriend)
 
-        var db = firebase.firestore();
-
-        let ref = db.collection('friendList').doc(idList);
-
-        let updateList = ref.update({
-            friendList: firebase.firestore.FieldValue.arrayRemove(friend)
-
-        }).then(response => {
-            res.status(status.OK).json({ success: 200 });
-        }).catch(err => {
-            res.status(status.INTERNAL_SERVER_ERROR).json(err);
-        });
-
-    } catch (err) {
-        res.status(status.INTERNAL_SERVER_ERROR).json({ error: err });
-    }
-});
-*/
 module.exports = router;
