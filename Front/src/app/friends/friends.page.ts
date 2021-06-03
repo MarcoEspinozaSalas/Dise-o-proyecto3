@@ -168,8 +168,8 @@ export class FriendsPage implements OnInit {
   refreshPlayers(){
     this.othello.getFL(this.datosUsuarioLoggedIn.user.uid)
     .subscribe((data:any)=>{
-        this.friendList = data.data.friendList;
-        this.testFL = data.data.friendList;
+        this.friendList = data.data.members;
+        this.testFL = data.data.members;
     });
 
   }

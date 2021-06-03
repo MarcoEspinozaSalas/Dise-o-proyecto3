@@ -102,6 +102,30 @@ router.post('/savePlayerInformation', async (req, res) => {
         res.status(status.INTERNAL_SERVER_ERROR).json({ error: err });
     }
 });
+
+router.get('/getAllplayers', async (req, res) => {
+
+    try {
+
+        var pool = firebase.firestore();
+        const usersRef = await pool.collection('registeredUsers');
+
+        var users = []
+        await usersRef.get().then((snapshot) => {
+
+            snapshot.forEach((doc) => {
+                users.push(doc.data());
+            })
+        });
+
+        res.status(status.OK).json({ users: users });
+
+    } catch {
+        res.status(status.INTERNAL_SERVER_ERROR).json({ error: 'Fail getting the players' });
+    }
+});
+
+
 //crea la familia sin el id de la lista
 router.post('/createdF', async (req, res) => {
 

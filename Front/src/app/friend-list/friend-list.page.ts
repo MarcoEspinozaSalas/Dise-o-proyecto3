@@ -51,17 +51,17 @@ export class FriendListPage implements OnInit {
   }
 
   createFL(){
-    this.FL.idListOwner=this.datosUsuarioLoggedIn.user.uid;
+    this.FL.idFamilyOwner=this.datosUsuarioLoggedIn.user.uid;
     this.FL.listName=this.listName;
     this.othello.createFL(this.FL)
     .subscribe((data:any)=>{
       if (data) {
-        this.idFriendList = data.idFriendList;
-        localStorage.setItem('FriendList',JSON.stringify(data.idFriendList))
-        localStorage.setItem('ListName',JSON.stringify(data.ListName))
-        this.toast.presentToast("Lista de amigos generada con éxito");
+        this.idFriendList = data.idFamily;
+        localStorage.setItem('FriendList',JSON.stringify(data.idFamily))
+        localStorage.setItem('ListName',JSON.stringify(data.FamilyName))
+        this.toast.presentToast("Familia generada con éxito");
         if (data.message == 'Already Exist') {
-          this.toast.presentToast("Ya tienes una lista de amigos");
+          this.toast.presentToast("Ya tienes una Familia");
         }
       }
     });
@@ -69,27 +69,25 @@ export class FriendListPage implements OnInit {
 
   addFriend(){
     if (this.idFriendToAdd != undefined) {
-      this.addF.idList = this.idFriendList
-      this.addF.idFriend = this.idFriendToAdd
+      this.addF.idFamily = this.idFriendList
+      this.addF.idMember = this.idFriendToAdd
       this.othello.addFriend(this.addF)
       .subscribe((data:any)=>{
         this.getFriendList();
-        this.toast.presentToast("Amigo agregado a la lista: " + this.listName)
+        this.toast.presentToast("Persona agregado a la familia: " + this.listName)
       })
     }
-
   }
 
   deleteFriend(){
     if (this.idFriendToDelete != undefined) {
-      this.deleteF.idList = this.idFriendList
-      this.deleteF.idFriend = this.idFriendToDelete
+      this.deleteF.idFamily = this.idFriendList
+      this.deleteF.idMember = this.idFriendToDelete
       this.othello.removeFriend(this.deleteF)
       .subscribe((data:any)=>{
         this.getFriendList();
-        this.toast.presentToast("Amigo eliminado de la lista: " + this.listName)
+        this.toast.presentToast("Persona eliminado de la familia: " + this.listName)
       });
-
     }
 
   }
@@ -97,7 +95,7 @@ export class FriendListPage implements OnInit {
   getFriendList(){
     this.othello.getFL(this.datosUsuarioLoggedIn.user.uid)
     .subscribe((data:any)=>{
-        this.friendList = data.data.friendList;
+        this.friendList = data.data.members;
     });
   }
 

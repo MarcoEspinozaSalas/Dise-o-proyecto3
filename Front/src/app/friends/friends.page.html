@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start" style="color :#000000; ">
-      <ion-back-button ></ion-back-button>
+      <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title style="color :#000000;">
       <strong>Create list</strong>
@@ -16,7 +16,7 @@
 </ion-header>|
 
 
-<ion-content  class="ion-padding" [scrollEvents]="true"  *ngIf="!toFamily">
+<ion-content class="ion-padding" [scrollEvents]="true" *ngIf="!toFamily">
   <ion-fab horizontal="end" vertical="bottom" slot="fixed">
     <ion-fab-button color="light">
       <ion-icon md="caret-up" ios="chevron-up-circle-outline"></ion-icon>
@@ -31,20 +31,16 @@
 
 <ion-content *ngIf="toFamily" class="ion-padding" [scrollEvents]="true">
 
-  <p *ngIf="testFL?.length < 1">No tienes amigos: Ve al icono arriba a la derecha y crea una lista de amigos</p>
-  <h3>Agregar miembros</h3>
+  <p *ngIf="testFL?.length < 1">No tienes miembros en tu familia: Ve al icono arriba a la derecha y crea una familia</p>
+
   <ion-button *ngIf="friendList != undefined  && testFL?.length > 0">Miembros de la familia</ion-button>
   <p *ngIf="friendList != undefined  && testFL?.length > 0"> Nombre de miembro: </p>
   <ion-select *ngIf="friendList != undefined  && testFL?.length > 0 " lines="full" [(ngModel)]="uid" placeholder="See players" (click)="refreshPlayers()">
     <ion-select-option *ngFor="let item of friendList">{{item.displayName}}</ion-select-option>
   </ion-select>
-  <ion-button  *ngIf="friendList != undefined  && testFL?.length > 0" class="backButton">
-    Agregar miembro
-    <ion-icon slot="start" name="arrow-back-circle-outline"></ion-icon>
-  </ion-button>
+
   <ion-button class="backButton" (click)="reset()">
     Back
     <ion-icon slot="start" name="arrow-back-circle-outline"></ion-icon>
   </ion-button>
 </ion-content>
-

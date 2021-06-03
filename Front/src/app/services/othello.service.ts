@@ -31,7 +31,7 @@ export class OthelloService {
   getAllGames(
     playerId:string
     ){
-    
+
     return this.http.get(`${environment.urlRootBack}/getPlayerGames?playerId=${playerId}`);
   }
 
@@ -59,7 +59,7 @@ export class OthelloService {
     idXgames: string,
   ){
     console.log(idXgames);
-    
+
     return this.http.get(`${environment.urlRootBack}/getGame?idGame=${idXgames}`);
   }
 
@@ -80,13 +80,13 @@ export class OthelloService {
   createFL(
     data: friendList
   ){
-    return this.http.post(`${environment.urlRootBack}/createdFL`, data);
+    return this.http.post(`${environment.urlRootBack}/createdF`, data);
   }
 
   getFL(
     idListOwner:string
   ){
-    return this.http.get(`${environment.urlRootBack}/getFriendListByOwner?idListOwner=${idListOwner}`);
+    return this.http.get(`${environment.urlRootBack}/getMemberListByOwner?idListOwner=${idListOwner}`);
   }
 
   editFL(
@@ -98,13 +98,13 @@ export class OthelloService {
   addFriend(
     data: friend
   ){
-      return this.http.put(`${environment.urlRootBack}/addFriend`, data);
+      return this.http.put(`${environment.urlRootBack}/addMember`, data);
   }
 
   removeFriend(
     data: friend
   ){
-      return this.http.put(`${environment.urlRootBack}/removeFriend`, data);
+      return this.http.put(`${environment.urlRootBack}/removeMember`, data);
   }
 
 }
