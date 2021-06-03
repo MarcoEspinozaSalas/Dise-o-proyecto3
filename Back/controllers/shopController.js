@@ -34,7 +34,7 @@ async function getPlayerInfo(uid) {
 
     try {
         var pool = firebase.firestore();
-        await pool.collection('registeredUsers').where('uid', "==", uid).
+        await pool.collection('registered Users').where('uid', "==", uid).
             get().then(snapshot => {
                 snapshot.forEach(async doc => {
                     user = await doc.data()
