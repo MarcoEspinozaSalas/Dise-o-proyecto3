@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from '@angular/router';
 //Models
-import {infoPlayerModel} from '../models/infoPlayer';
+import {infoUser} from '../models/infoUser';
 //Service
-import { OthelloService } from '../services/othello.service';
+import { BackService } from '../services/back.service';
 import { FirebaseService } from '../services/firebase.service';
 
 @Component({
@@ -16,11 +16,11 @@ export class LoginPage implements OnInit {
  datosUsuarioLoggedIn : any;
  email = "";
  password = "";
- dataPlayer = new infoPlayerModel();
+ dataUser = new infoUser();
  errorMessage = ''; // validation error handle
  error: { name: string, message: string} = {name: '', message: ''}; // control error firebase
 
-  constructor(private firebaseService: FirebaseService, private router: Router, private othelloService: OthelloService) {
+  constructor(private firebaseService: FirebaseService, private router: Router, private backService: BackService) {
     this.datosUsuarioLoggedIn = JSON.parse(localStorage.getItem('user'));
     if (this.datosUsuarioLoggedIn != null) {
       this.firebaseService.signOut();
@@ -58,20 +58,20 @@ export class LoginPage implements OnInit {
   this.firebaseService.loginWithFacebook()
   .then(() => {
     this.datosUsuarioLoggedIn = JSON.parse(localStorage.getItem('user'));
-    this.dataPlayer.uid = this.datosUsuarioLoggedIn.user.uid;
-    this.dataPlayer.displayName = this.datosUsuarioLoggedIn.user.displayName;
-    this.dataPlayer.email = this.datosUsuarioLoggedIn.user.email;
-    this.othelloService.postPlayer(this.dataPlayer)
+    this.dataUser.uid = this.datosUsuarioLoggedIn.user.uid;
+    this.dataUser.displayName = this.datosUsuarioLoggedIn.user.displayName;
+    this.dataUser.email = this.datosUsuarioLoggedIn.user.email;
+    this.backService.postPlayer(this.dataUser)
       .subscribe((data:any)=>{
-        if (data.FriendList == undefined) {
-          localStorage.setItem('FriendList',JSON.stringify(''))
+        if (data.FamilyList == undefined) {
+          localStorage.setItem('FamilyList',JSON.stringify(''))
           localStorage.setItem('ListName',JSON.stringify(''))
         }else {
-          localStorage.setItem('FriendList',JSON.stringify(data.FriendList))
+          localStorage.setItem('FamilyList',JSON.stringify(data.FamilyList))
           localStorage.setItem('ListName',JSON.stringify(data.ListName))
         }
       });
-    this.router.navigate(['/lobby'])
+    this.router.navigate(['/main'])
     }).catch(_error => {
       this.error = _error
       this.router.navigate(['/login'])
@@ -83,20 +83,20 @@ export class LoginPage implements OnInit {
     this.firebaseService.loginWithGoogle()
     .then(() => {
       this.datosUsuarioLoggedIn = JSON.parse(localStorage.getItem('user'));
-      this.dataPlayer.uid = this.datosUsuarioLoggedIn.user.uid;
-      this.dataPlayer.displayName = this.datosUsuarioLoggedIn.user.displayName;
-      this.dataPlayer.email = this.datosUsuarioLoggedIn.user.email;
-      this.othelloService.postPlayer(this.dataPlayer)
+      this.dataUser.uid = this.datosUsuarioLoggedIn.user.uid;
+      this.dataUser.displayName = this.datosUsuarioLoggedIn.user.displayName;
+      this.dataUser.email = this.datosUsuarioLoggedIn.user.email;
+      this.backService.postPlayer(this.dataUser)
         .subscribe((data:any)=>{
-          if (data.FriendList == undefined) {
-            localStorage.setItem('FriendList',JSON.stringify(''))
+          if (data.FamilyList == undefined) {
+            localStorage.setItem('FamilyList',JSON.stringify(''))
             localStorage.setItem('ListName',JSON.stringify(''))
           }else {
-            localStorage.setItem('FriendList',JSON.stringify(data.FriendList))
+            localStorage.setItem('FamilyList',JSON.stringify(data.FamilyList))
             localStorage.setItem('ListName',JSON.stringify(data.ListName))
           }
         });
-      this.router.navigate(['/lobby'])
+      this.router.navigate(['/main'])
     }).catch(_error => {
       this.error = _error
       this.router.navigate(['/login'])
@@ -109,20 +109,20 @@ export class LoginPage implements OnInit {
       this.firebaseService.loginWithEmail(this.email, this.password)
       .then(() => {
         this.datosUsuarioLoggedIn = JSON.parse(localStorage.getItem('user'));
-        this.dataPlayer.uid = this.datosUsuarioLoggedIn.user.uid;
-        this.dataPlayer.displayName = this.datosUsuarioLoggedIn.user.displayName;
-        this.dataPlayer.email = this.datosUsuarioLoggedIn.user.email;
-        this.othelloService.postPlayer(this.dataPlayer)
+        this.dataUser.uid = this.datosUsuarioLoggedIn.user.uid;
+        this.dataUser.displayName = this.datosUsuarioLoggedIn.user.displayName;
+        this.dataUser.email = this.datosUsuarioLoggedIn.user.email;
+        this.backService.postPlayer(this.dataUser)
           .subscribe((data:any)=>{
-            if (data.FriendList == undefined) {
-              localStorage.setItem('FriendList',JSON.stringify(''))
+            if (data.FamilyList == undefined) {
+              localStorage.setItem('FamilyList',JSON.stringify(''))
               localStorage.setItem('ListName',JSON.stringify(''))
             }else {
-              localStorage.setItem('FriendList',JSON.stringify(data.FriendList))
-              localStorage.setItem('ListName',JSON.stringify(data.ListName))
+              localStorage.setItem('FamilyList',JSON.stringify(data.FamilyList))
+              localStorage.setItem('ListName',JSON.stringify(data.FamilyName))
             }
           });
-        this.router.navigate(['/lobby'])
+        this.router.navigate(['/main'])
       }).catch(_error => {
         this.error = _error
         this.router.navigate(['/login'])

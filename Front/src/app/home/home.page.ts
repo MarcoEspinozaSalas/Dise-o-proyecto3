@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 
 //Models
-import {infoPlayerModel} from '../models/infoPlayer';
+import {infoUser} from '../models/infoUser';
 //Service
-import { OthelloService } from '../services/othello.service';
+import { BackService } from '../services/back.service';
 import { FirebaseService } from '../services/firebase.service';
 
 @Component({
@@ -13,9 +13,9 @@ import { FirebaseService } from '../services/firebase.service';
 })
 export class HomePage {
   datosUsuarioLoggedIn : any;
-  dataPlayer = new infoPlayerModel();
+  dataPlayer = new infoUser();
 
-  constructor(private othelloService: OthelloService, private firebaseService: FirebaseService) {
+  constructor(private back: BackService, private firebaseService: FirebaseService) {
     this.datosUsuarioLoggedIn = JSON.parse(localStorage.getItem('user'));
     if (this.datosUsuarioLoggedIn != null) {
       this.firebaseService.signOut();

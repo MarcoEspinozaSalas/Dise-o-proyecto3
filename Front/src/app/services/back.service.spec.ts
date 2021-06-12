@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { OthelloService } from './othello.service';
+import { BackService } from './back.service';
 
-describe('OthelloService', () => {
-  let service: OthelloService;
+describe('BackService', () => {
+  let service: BackService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(OthelloService);
+    service = TestBed.inject(BackService);
   });
 
   it('should be created', () => {

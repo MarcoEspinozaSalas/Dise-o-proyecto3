@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { FriendListPageRoutingModule } from './friend-list-routing.module';
+import { FamilyMainPageRoutingModule } from './family-main-routing.module';
 
-import { FriendListPage } from './friend-list.page';
+import { FamilyMainPage } from './family-main.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    FriendListPageRoutingModule
+    FamilyMainPageRoutingModule
   ],
-  declarations: [FriendListPage]
+  declarations: [FamilyMainPage]
 })
-export class FriendListPageModule {}
+export class FamilyMainPageModule {}

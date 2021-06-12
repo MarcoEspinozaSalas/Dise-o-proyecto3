@@ -1,4 +1,4 @@
-export class friendList {
+export class familyList {
    idFamilyOwner: string;
    listName: string;
 }

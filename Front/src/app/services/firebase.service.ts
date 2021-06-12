@@ -69,8 +69,8 @@ export class FirebaseService {
   {
     this.firebaseAuth.signOut();
     localStorage.removeItem('user')
-    localStorage.removeItem('FriendList')
-    localStorage.removeItem('FriendListName')
+    localStorage.removeItem('FamilyList')
+    localStorage.removeItem('FamilyListName')
     localStorage.removeItem('ListName')
     this.router.navigate(['/home'],{replaceUrl : true});
   }

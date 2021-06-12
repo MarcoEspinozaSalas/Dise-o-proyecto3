@@ -1,4 +1,4 @@
 export class editFL {
-   idList: string;
+   idFamily: string;
    listName: string;
 }

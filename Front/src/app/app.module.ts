@@ -13,7 +13,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { environment } from '../environments/environment';
 
 //Services
-import { OthelloService } from './services/othello.service';
+import { BackService } from './services/back.service';
 import { FirebaseService } from './services/firebase.service';
 import { ToastService } from "./services/toast.service";
 
@@ -43,7 +43,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     AngularFirestoreModule,
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    OthelloService,
+    BackService,
     FirebaseService,
     ToastService],
   bootstrap: [AppComponent],

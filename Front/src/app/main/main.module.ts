@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { LobbyPageRoutingModule } from './lobby-routing.module';
+import { MainPageRoutingModule } from './main-routing.module';
 
-import { LobbyPage } from './lobby.page';
+import { MainPage } from './main.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    LobbyPageRoutingModule
+    MainPageRoutingModule
   ],
-  declarations: [LobbyPage]
+  declarations: [MainPage]
 })
-export class LobbyPageModule {}
+export class MainPageModule {}

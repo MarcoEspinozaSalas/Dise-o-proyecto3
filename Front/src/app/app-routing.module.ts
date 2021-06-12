@@ -23,18 +23,27 @@ const routes: Routes = [
     path: 'forgot-password',
     loadChildren: () => import('./forgot-password/forgot-password.module').then( m => m.ForgotPasswordPageModule)
   },
-  {
-    path: 'lobby',
-    loadChildren: () => import('./lobby/lobby.module').then( m => m.LobbyPageModule)
-  },
 
   {
-    path: 'friends',
-    loadChildren: () => import('./friends/friends.module').then( m => m.FriendsPageModule)
+    path: 'main',
+    loadChildren: () => import('./main/main.module').then( m => m.MainPageModule)
   },  {
-    path: 'friend-list',
-    loadChildren: () => import('./friend-list/friend-list.module').then( m => m.FriendListPageModule)
+    path: 'family-main',
+    loadChildren: () => import('./family-main/family-main.module').then( m => m.FamilyMainPageModule)
   },
+
+
+
+/*
+  {
+    path: 'family',
+    loadChildren: () => import('./family/friends.module').then( m => m.FriendsPageModule)
+  },
+  {
+    path: 'family-list',
+    loadChildren: () => import('./family-list/family-list.module').then( m => m.FriendListPageModule)
+  },
+  */
 
  
 

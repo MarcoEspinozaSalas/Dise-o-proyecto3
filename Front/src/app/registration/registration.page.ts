@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import {Router} from '@angular/router';
 import { FirebaseService } from '../services/firebase.service';
 import { ToastService } from '../services/toast.service';
-import {infoPlayerModel} from '../models/infoPlayer';
+import {infoUser} from '../models/infoUser';
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.page.html',
@@ -16,7 +16,7 @@ export class RegistrationPage implements OnInit {
 
   datosUsuarioLoggedIn : any;
 
-  dataPlayer = new infoPlayerModel();
+  dataPlayer = new infoUser();
 
   displayName = "";
   email = "";
@@ -79,7 +79,7 @@ export class RegistrationPage implements OnInit {
   }
 
   async delay(ms: number) {
-    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log(""));
+    await new Promise<void>(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log(""));
   }
 
 }
