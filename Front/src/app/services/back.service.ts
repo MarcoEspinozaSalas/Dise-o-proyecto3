@@ -9,6 +9,8 @@ import { editFL } from '../models/editFL';
 import { family } from '../models/family';
 //Environment
 import { environment } from '../../environments/environment';
+import { removeMember } from '../models/removeMember';
+import { addMember } from '../models/addMember';
 
 
 @Injectable({
@@ -28,10 +30,22 @@ export class BackService {
     return this.http.get(`${environment.urlRootBack}/getAllplayers`);
   }
 
+  getFamilyByUser(
+    uid:string
+  ){
+    return this.http.get(`${environment.urlRootBack}/getFamilyByUser?uid=${uid}`);
+  }
+
+  getFamilytByOwner(
+    idFamilyOwner:string
+  ){
+    return this.http.get(`${environment.urlRootBack}/getFamilytByOwner?idFamilyOwner=${idFamilyOwner}`);
+  }
+
 
   //Lista de amigos
 
-  createFL(
+  createF(
     data: familyList
   ){
     return this.http.post(`${environment.urlRootBack}/createdF`, data);
@@ -49,14 +63,20 @@ export class BackService {
     return this.http.put(`${environment.urlRootBack}/editFriendList`, data);
   }
 
+   getFamilyId(
+    idFamilyOwner: string
+  ){
+    return this.http.get(`${environment.urlRootBack}/getFamilyId?idFamilyOwner=${idFamilyOwner}`);
+  }
+
   addMember(
-    data: family
+    data: addMember
   ){
       return this.http.put(`${environment.urlRootBack}/addMember`, data);
   }
 
   removeMember(
-    data: family
+    data: removeMember
   ){
       return this.http.put(`${environment.urlRootBack}/removeMember`, data);
   }

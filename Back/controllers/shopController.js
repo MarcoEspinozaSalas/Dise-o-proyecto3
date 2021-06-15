@@ -85,7 +85,7 @@ router.post('/savePlayerInformation', async (req, res) => {
             .get()
             .then(snapshot => {
                 snapshot.forEach(async doc => {
-                    if (await doc.data().listOwner.uid === uid) {
+                    if (await doc.data().idFamilyOwner.uid === uid) {
                         idFamily = doc.id;
                         listName = doc.data().listName;
                     }
@@ -110,7 +110,7 @@ router.get('/getAllplayers', async (req, res) => {
         var pool = firebase.firestore();
         const usersRef = await pool.collection('registeredUsers');
 
-        var users = []
+        var users = [];
         await usersRef.get().then((snapshot) => {
 
             snapshot.forEach((doc) => {
@@ -124,6 +124,39 @@ router.get('/getAllplayers', async (req, res) => {
         res.status(status.INTERNAL_SERVER_ERROR).json({ error: 'Fail getting the players' });
     }
 });
+
+
+
+router.get('/getFamilyByUser', async (req, res) => {
+    const uid = req.query.uid;
+    try {
+
+        var db = firebase.firestore();
+        var list = [];
+        var data = '';
+
+        db.collection('family').get()
+        .then(snapshot => {
+          snapshot.forEach(async doc => {
+            var {members} = doc.data();
+            members.forEach( vari => {
+                if (vari.uid === uid) {
+                    list.push(doc.data())
+                }
+            })
+          });
+          
+            res.status(status.OK).json({data:list, success:true});
+        }).catch(err => {
+            res.status(status.INTERNAL_SERVER_ERROR).json({error:err+' ', success:false});
+        });
+
+    } catch (err) {
+        res.status(status.INTERNAL_SERVER_ERROR).json({error:err+' ', success:false});
+    }
+});
+
+
 
 
 //crea la familia sin el id de la lista
@@ -171,9 +204,9 @@ router.post('/createdF', async (req, res) => {
     }
 });
 //obtiene la lista en la info de la lista del dueño
-router.get('/getMemberListByOwner', async (req, res) => {
+router.get('/getFamilytByOwner', async (req, res) => {
 
-    const idFamilyOwner = req.query.idListOwner;
+    const idFamilyOwner = req.query.idFamilyOwner;
 
     try {
 
@@ -186,15 +219,42 @@ router.get('/getMemberListByOwner', async (req, res) => {
           snapshot.forEach(async doc => {
             data = doc.data();
           });
-            res.status(status.OK).json({data});
+            res.status(status.OK).json({data:data, success:true});
         }).catch(err => {
-            res.status(status.INTERNAL_SERVER_ERROR).json(err);
+            res.status(status.INTERNAL_SERVER_ERROR).json({error:err+' ', success:false});
         });
 
     } catch (err) {
-        res.status(status.INTERNAL_SERVER_ERROR).json({ error: err });
+        res.status(status.INTERNAL_SERVER_ERROR).json({error:err+' ', success:false});
     }
 });
+
+//obtiene el id de la familia
+router.get('/getFamilyId', async (req, res) => {
+
+    const idFamilyOwner = req.query.idFamilyOwner;
+
+    try {
+
+        var db = firebase.firestore();
+
+        var data = '';
+
+        db.collection('family').where('idFamilyOwner.uid', "==", idFamilyOwner).get()
+        .then(snapshot => {
+          snapshot.forEach(async doc => {
+            data = doc.id;
+          });
+            res.status(status.OK).json({data:data, success:true});
+        }).catch(err => {
+            res.status(status.INTERNAL_SERVER_ERROR).json({error:err+' ', success:false});
+        });
+
+    } catch (err) {
+        res.status(status.INTERNAL_SERVER_ERROR).json({error:err+' ', success:false});
+    }
+});
+
 //edita el nombre de la familia con el id
 router.put('/editFamily', async (req, res) => {
 
@@ -246,7 +306,7 @@ router.put('/addMember', async (req, res) => {
     try {
 
         const idFamily = req.body.idFamily;
-        const member= await getPlayerInfo(req.body.idMember)
+        const member= await getPlayerInfo(req.body.member)
 
         var db = firebase.firestore();
 
@@ -264,29 +324,35 @@ router.put('/addMember', async (req, res) => {
         res.status(status.INTERNAL_SERVER_ERROR).json({ error: err });
     }
 });
+
 //remueve un miembro de la familia
 router.put('/removeMember', async (req, res) => {
     try {
 
-        const idFamily = req.body.idFamily;
-        const member= await getPlayerInfo(req.body.idMember)
-
+        const idFamily = req.body.idFamilyList;
+        const member= await getPlayerInfo(req.body.uid)
+        
         var db = firebase.firestore();
+        
 
+        
         let ref = db.collection('family').doc(idFamily);
 
         let updateList = ref.update({
             members: firebase.firestore.FieldValue.arrayRemove(member)
-        }).then(response => {
-            res.status(status.OK).json({ success: 200 });
+
+        }).then(data => {
+            res.status(status.OK).json({data:data, success:true});
         }).catch(err => {
-            res.status(status.INTERNAL_SERVER_ERROR).json(err);
+            res.status(status.INTERNAL_SERVER_ERROR).json({error:err + ' ', success:false});
         });
 
     } catch (err) {
-        res.status(status.INTERNAL_SERVER_ERROR).json({ error: err });
+        res.status(status.INTERNAL_SERVER_ERROR).json({error:err + ' ', success:false});
     }
 });
+
+
 //crea una lista de productoos
 router.post('/createdList', async (req, res) => {
 

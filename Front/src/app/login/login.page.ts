@@ -61,16 +61,7 @@ export class LoginPage implements OnInit {
     this.dataUser.uid = this.datosUsuarioLoggedIn.user.uid;
     this.dataUser.displayName = this.datosUsuarioLoggedIn.user.displayName;
     this.dataUser.email = this.datosUsuarioLoggedIn.user.email;
-    this.backService.postPlayer(this.dataUser)
-      .subscribe((data:any)=>{
-        if (data.FamilyList == undefined) {
-          localStorage.setItem('FamilyList',JSON.stringify(''))
-          localStorage.setItem('ListName',JSON.stringify(''))
-        }else {
-          localStorage.setItem('FamilyList',JSON.stringify(data.FamilyList))
-          localStorage.setItem('ListName',JSON.stringify(data.ListName))
-        }
-      });
+    this.backService.postPlayer(this.dataUser);
     this.router.navigate(['/main'])
     }).catch(_error => {
       this.error = _error
