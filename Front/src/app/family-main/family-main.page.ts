@@ -4,6 +4,7 @@ import { identity } from 'rxjs';
 import { addMember } from '../models/addMember';
 import { family } from '../models/family';
 import { familyList } from '../models/familyList';
+import { productList } from '../models/productList';
 import { removeMember } from '../models/removeMember';
 import { BackService } from '../services/back.service';
 import { ToastService } from '../services/toast.service';
@@ -28,68 +29,91 @@ export class FamilyMainPage implements OnInit {
   toAdd = new addMember();
   toCreate = new familyList();
 
+  productList = new productList();
+
   userCreator = false;
   userMember = false;
   family: any;
+  private showMembers: boolean = false;
 
   constructor(private back: BackService, private router: Router, private toast:ToastService) {
     this.datosUsuarioLoggedIn = JSON.parse(localStorage.getItem('user'));  
-
     
   }
+
   ngOnInit() {
     this.verify();
   }
 
-
   toggleD() {
     this.showMembers = !this.showMembers;
   }
-  private showMembers: boolean = false;
-
-
 
   verify(){
-    this.back.getFamilyByUser(this.datosUsuarioLoggedIn.user.uid)
-    .subscribe((data:any)=>{
-      if (data.data.length !== 0) {
-        this.userMember = true;
-        this.family = data.data[0];
 
-        this.getFamilyId(this.family.idFamilyOwner.uid);
-      }
-    });
     this.back.getFamilytByOwner(this.datosUsuarioLoggedIn.user.uid)
     .subscribe((data:any)=>{
       if (data.data.length !== 0) {
         this.userCreator = true;
         this.family = data.data;
         console.log(family);
-        
         this.getFamilyId(this.datosUsuarioLoggedIn.user.uid);
+      }else{
+        this.back.getFamilyByUser(this.datosUsuarioLoggedIn.user.uid)
+        .subscribe((data:any)=>{
+          if (data.data.length !== 0) {
+            this.userMember = true;
+            this.family = data.data[0];
+            this.getFamilyId(this.family.idFamilyOwner.uid);
+          }
+          
+        });
       }
     });
 
-
-
   }
 
+  createProductList() {
+    var id ="";
+    this.productList.idFamilyOwner = this.datosUsuarioLoggedIn.user.uid;
+      this.back.createProductList(this.productList)
+      .subscribe((data:any)=>{
+        if (data.success) {    
+          id = data.data;
+        }
+      })
+      console.log(id);
+      
+      return id;
+  }
+  
+
   createFamily(){
-
-    if(this.text2==""){
-      this.toast.presentToast(`Ingrese un nombre de familia`);
-    }else
+    let s = false;
+    if(this.text2=="")
     {
-    this.toCreate.idFamilyOwner = this.datosUsuarioLoggedIn.user.uid;
-    this.toCreate.listName = this.text2;
-    this.back.createF(this.toCreate)
-    .subscribe((data:any)=>{
-
-      this.toast.chatToast(`Familia creada`);
-    });
-    this.router.navigate(['/main'])
-
+      this.toast.informationToast('Ingrese un nombre de familia','warning','Campo vacío:');
     }
+    else {
+
+        this.toCreate.idFamilyOwner = this.datosUsuarioLoggedIn.user.uid;
+        this.toCreate.listName = this.text2;
+        this.toCreate.idProduct = "";
+
+        console.log(this.toCreate);
+        
+        this.back.createF(this.toCreate)
+        .subscribe((data:any)=>{
+          if (data.success) {
+            this.toast.informationToast('Famlia creada exitosamente:','success','');
+            this.userCreator = false;
+            this.userMember = false;
+            this.verify();
+          }else{
+            this.toast.informationToast('Fallo de sistema','danger','Error:');
+          }
+        });
+      }
   }
 
   deletMember(id:string, name :string){
@@ -97,8 +121,12 @@ export class FamilyMainPage implements OnInit {
     this.toRemove.uid = id;
     this.back.removeMember(this.toRemove)
     .subscribe((data:any)=>{
-
-      this.toast.presentToast(`Usuario eliminado`);
+      if (data['success']) {
+        this.toast.informationToast('Usuario eliminado exitosamente:','succes','');
+        this.filterPlayeyrs();
+      }else{
+        this.toast.informationToast('Fallo de sistema','danger','Error:');
+      }
     });
     this.verify();
   }
@@ -108,8 +136,13 @@ export class FamilyMainPage implements OnInit {
     this.toAdd.member = id;
     this.back.addMember(this.toAdd)
     .subscribe((data:any)=>{
-
-      this.toast.presentToast(`Usuario añadido`);
+      if (data['success']) {
+        this.toast.informationToast('Usuario añadido exitosamente:','succes','');
+        this.filterPlayeyrs();
+      }else{
+        this.toast.informationToast('Fallo de sistema','danger','Error:');
+      }
+      
     });
     this.verify();
   }
@@ -139,5 +172,9 @@ export class FamilyMainPage implements OnInit {
     
   }
   
+
+
 }
+
+
 

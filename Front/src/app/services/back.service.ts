@@ -11,6 +11,7 @@ import { family } from '../models/family';
 import { environment } from '../../environments/environment';
 import { removeMember } from '../models/removeMember';
 import { addMember } from '../models/addMember';
+import { productList } from '../models/productList';
 
 
 @Injectable({
@@ -49,6 +50,13 @@ export class BackService {
     data: familyList
   ){
     return this.http.post(`${environment.urlRootBack}/createdF`, data);
+  }
+
+
+  createProductList(
+    idFamilyOwner: productList
+  ){
+    return this.http.post(`${environment.urlRootBack}/createProductList`, idFamilyOwner);
   }
 
   getFL(

@@ -8,8 +8,8 @@
     </ion-title>
     <ion-buttons slot="primary">
       
-      <ion-button [routerLink]="['/family-main']">
-        <ion-icon slot="icon-only" md="list-circle-outline"></ion-icon>
+      <ion-button (click)="esto()">
+      <ion-icon slot="icon-only" md="list-circle-outline"></ion-icon>
 
       </ion-button>
     </ion-buttons>
@@ -17,8 +17,18 @@
 </ion-header>
 
 <ion-content>
-
-
+  <ion-content *ngIf="hasFamily">
+    <ion-card>
+      <p>Se tiene una familia</p>
+    </ion-card>
+  </ion-content>
   
+
+
+  <ion-content *ngIf="!hasFamily">
+        <p style="color: black;text-align: center; ">
+          No pertenece ni posee una lista familiar, solicitar ser añadido o crear una por medio del icono en la esquina superior derecha
+        </p>
+  </ion-content>
 </ion-content>
 

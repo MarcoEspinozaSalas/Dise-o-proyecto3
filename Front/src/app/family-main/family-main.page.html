@@ -63,28 +63,14 @@
 </ion-content>
 
 <ion-content *ngIf="userMember">
-  <ion-card>
-    <strong>
-      <p style="color: black;text-align: left; margin: 5px 10px 10px;">Familia a la que pertenece: </p>
-    </strong>
-      <p style="color: black;text-align: center; margin: 10px 1px 10px;">{{family.listName}}</p>
-  </ion-card>
 
-  <ion-card button class="card-2">
-    <ion-list lines="none">
-      <ion-item-group>
-        <ion-item-divider  style="color:black;" (click)="toggleD()">
-          <strong>  Miembros </strong>
-          <ion-icon class="ml-20" color="white" name="caret-up-outline" *ngIf="!showMembers" style="position: absolute; right: 20px;"></ion-icon>
-          <ion-icon class="ml-20" color="white" name="caret-down-outline" *ngIf="showMembers" style="position: absolute; right: 20px;"></ion-icon>
-        </ion-item-divider>
-        <div *ngIf="showMembers">
-          <ion-item *ngFor="let member of family.members">
-              <ion-label>{{member.displayName}}</ion-label>
-          </ion-item>
-        </div>
-      </ion-item-group>
-    </ion-list>
+  <ion-card>
+      <p style="color: black;text-align: center; ">Ya  eres miembro de una familia,</p>
+      <p style="color: black;text-align: center; ">puedes crear una o ser solo miembro </p>
+  </ion-card>
+  <ion-card>
+    <ion-input placeholder="Family name" style="color: black; text-align: left;"[(ngModel)]="text2" ></ion-input>
+    <ion-button  expand="block" (click)="createFamily()">Create family</ion-button>
   </ion-card>
 
 </ion-content>
@@ -96,7 +82,7 @@
   </ion-card>
   <ion-card>
     <ion-input placeholder="Family name" style="color: black; text-align: left;"[(ngModel)]="text2" ></ion-input>
-    <ion-button  [routerLink]="['/login']" expand="block" (click)="createFamily()">Create family</ion-button>
+    <ion-button  expand="block" (click)="createFamily()">Create family</ion-button>
   </ion-card>
 
  

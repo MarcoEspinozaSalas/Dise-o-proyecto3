@@ -58,6 +58,29 @@ async function saveInformation(uid, email, displayName) {
     }
 }
 
+
+router.post('/createProductList', async (req, res) => {
+    const idFamilyOwner = await getPlayerInfo(req.body.idFamilyOwner)
+    try {
+
+        var db = firebase.firestore();
+        await db.collection('productList').add({
+            
+            idListOwner: idFamilyOwner,
+            products: listGenerator()
+        }).then(data => {
+                res.status(status.OK).json({ data:data.id, success:true});
+            }).catch(err => {
+                res.status(status.INTERNAL_SERVER_ERROR).json({ error: err+" ", success:false});
+            });
+    } catch (err) {
+        res.status(status.INTERNAL_SERVER_ERROR).json({ error: err+" ", success:false});
+    }
+});
+
+
+
+
 router.post('/savePlayerInformation', async (req, res) => {
 
     const uid = req.body.uid;
@@ -70,6 +93,7 @@ router.post('/savePlayerInformation', async (req, res) => {
         var alreadyExist = true;
         var idFamily;
         var listName;
+        
 
         await pool.collection('registeredUsers')
             .get()
@@ -125,8 +149,6 @@ router.get('/getAllplayers', async (req, res) => {
     }
 });
 
-
-
 router.get('/getFamilyByUser', async (req, res) => {
     const uid = req.query.uid;
     try {
@@ -156,21 +178,14 @@ router.get('/getFamilyByUser', async (req, res) => {
     }
 });
 
-
-
-
 //crea la familia sin el id de la lista
 router.post('/createdF', async (req, res) => {
-
     const idFamilyOwner = await getPlayerInfo(req.body.idFamilyOwner)
     const listName = req.body.listName;
-
+    const idProduct = req.body.idProduct;
     var alreadyExist = false;
-
     try {
-
         var db = firebase.firestore();
-
         await db.collection('family')
             .get()
             .then(snapshot => {
@@ -182,17 +197,18 @@ router.post('/createdF', async (req, res) => {
             });
 
         if (!alreadyExist) {
-          db.collection('family').add({
+            console.log("asdasd");
+        await db.collection('family').add({
               idFamilyOwner: idFamilyOwner,
               listName: listName,
               members: listGenerator(),
-              idProductList: null
+              idProductList: idProduct
 
           }).then(response => {
-              res.status(status.OK).json({ idFamily: response.id, FamilyName: listName});
+              res.status(status.OK).json({ success: 200});
           }).catch(err => {
               console.log(err);
-              res.status(status.INTERNAL_SERVER_ERROR).json(err);
+              res.status(status.INTERNAL_SERVER_ERROR).json(err+" ");
           });
         }
         else
@@ -200,9 +216,10 @@ router.post('/createdF', async (req, res) => {
 
     } catch (err) {
         console.log(err);
-        res.status(status.INTERNAL_SERVER_ERROR).json({ error: err });
+        res.status(status.INTERNAL_SERVER_ERROR).json({ error: err+" " });
     }
 });
+
 //obtiene la lista en la info de la lista del dueño
 router.get('/getFamilytByOwner', async (req, res) => {
 
@@ -278,6 +295,7 @@ router.put('/editFamily', async (req, res) => {
         res.status(status.INTERNAL_SERVER_ERROR).json({ error: err });
     }
 });
+
 //añade el id de la lista de productos al espacio de id de la familia
 router.put('/addProductListId', async (req, res) => {
     try {
@@ -301,6 +319,7 @@ router.put('/addProductListId', async (req, res) => {
         res.status(status.INTERNAL_SERVER_ERROR).json({ error: err });
     }
 });
+
 //añade un miembro a la familia
 router.put('/addMember', async (req, res) => {
     try {
@@ -331,10 +350,8 @@ router.put('/removeMember', async (req, res) => {
 
         const idFamily = req.body.idFamilyList;
         const member= await getPlayerInfo(req.body.uid)
-        
-        var db = firebase.firestore();
-        
 
+        var db = firebase.firestore();
         
         let ref = db.collection('family').doc(idFamily);
 
@@ -352,8 +369,8 @@ router.put('/removeMember', async (req, res) => {
     }
 });
 
-
-//crea una lista de productoos
+//crea una lista de productos
+/*
 router.post('/createdList', async (req, res) => {
 
     const idListOwner = await getPlayerInfo(req.body.idListOwner)
@@ -385,17 +402,18 @@ router.post('/createdList', async (req, res) => {
               res.status(status.OK).json({ IdListOwner: response.id, ListName: listName, ListId: response.id });
           }).catch(err => {
               console.log(err);
-              res.status(status.INTERNAL_SERVER_ERROR).json(err);
+              res.status(status.INTERNAL_SERVER_ERROR).json({error:err + ' ', success:false});
           });
         }
         else
-          res.status(status.OK).json({ message: 'Already Exist' });
+          res.status(status.OK).json({ message: 'Already Exist' ,success:false});
 
     } catch (err) {
         console.log(err);
-        res.status(status.INTERNAL_SERVER_ERROR).json({ error: err });
+        res.status(status.INTERNAL_SERVER_ERROR).json({error:err + ' ', success:false});
     }
 });
+*/
 //añade un producto a la lista de productos usando el id de la lista
 router.put('/addProduct', async (req, res) => {
     try {
@@ -420,6 +438,59 @@ router.put('/addProduct', async (req, res) => {
     }
 });
 
+//creacion de categorias
+router.post('/createCategory', async (req, res) => {
+    const name = req.body.name;
+    var alreadyExist = false;
+    try {
+        var db = firebase.firestore();
+        await db.collection('Category')
+            .get()
+            .then(snapshot => {
+                snapshot.forEach(async doc => {
+                    if (await doc.data().name === name) {
+                        alreadyExist = true;
+                    }
+                });
+            });
+        if (!alreadyExist) {
+          db.collection('Category').add({
+              name: name
+          }).then(response => {
+              res.status(status.OK).json({ success: 200 });
+          }).catch(err => {
+              console.log(err);
+              res.status(status.INTERNAL_SERVER_ERROR).json({error:err + ' ', success:false});
+          });
+        }
+        else
+          res.status(status.OK).json({ message: 'Already Exist' });
+    } catch (err) {
+        console.log(err);
+        res.status(status.INTERNAL_SERVER_ERROR).json({error:err + ' ', success:false});
+    }
+});
 
+//Obtener todas la categorias
+router.get('/getAllCategory', async (req, res) => {
 
+    try {
+
+        var pool = firebase.firestore();
+        const catRef = await pool.collection('Category');
+
+        var categories = [];
+        await catRef.get().then((snapshot) => {
+
+            snapshot.forEach((doc) => {
+                categories.push(doc.data());
+            })
+        });
+
+        res.status(status.OK).json({ data:categories, success:true});
+
+    } catch {
+        res.status(status.INTERNAL_SERVER_ERROR).json({ error:err+' ', success:false });
+    }
+});
 module.exports = router;
