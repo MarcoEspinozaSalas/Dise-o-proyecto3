@@ -31,6 +31,14 @@ const routes: Routes = [
     path: 'family-main',
     loadChildren: () => import('./family-main/family-main.module').then( m => m.FamilyMainPageModule)
   },
+  {
+    path: 'lista-compra',
+    loadChildren: () => import('./lista-compra/lista-compra.module').then( m => m.ListaCompraPageModule)
+  },
+  {
+    path: 'create-product',
+    loadChildren: () => import('./create-product/create-product.module').then( m => m.CreateProductPageModule)
+  },
 
 
 

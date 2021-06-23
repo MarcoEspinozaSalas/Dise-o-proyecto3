@@ -65,7 +65,6 @@ router.post('/createProductList', async (req, res) => {
 
         var db = firebase.firestore();
         await db.collection('productList').add({
-            
             idListOwner: idFamilyOwner,
             products: listGenerator()
         }).then(data => {
@@ -77,8 +76,6 @@ router.post('/createProductList', async (req, res) => {
         res.status(status.INTERNAL_SERVER_ERROR).json({ error: err+" ", success:false});
     }
 });
-
-
 
 
 router.post('/savePlayerInformation', async (req, res) => {
@@ -93,7 +90,7 @@ router.post('/savePlayerInformation', async (req, res) => {
         var alreadyExist = true;
         var idFamily;
         var listName;
-        
+
 
         await pool.collection('registeredUsers')
             .get()
@@ -167,7 +164,7 @@ router.get('/getFamilyByUser', async (req, res) => {
                 }
             })
           });
-          
+
             res.status(status.OK).json({data:list, success:true});
         }).catch(err => {
             res.status(status.INTERNAL_SERVER_ERROR).json({error:err+' ', success:false});
@@ -197,13 +194,11 @@ router.post('/createdF', async (req, res) => {
             });
 
         if (!alreadyExist) {
-            console.log("asdasd");
         await db.collection('family').add({
               idFamilyOwner: idFamilyOwner,
-              listName: listName,
+              familyName: listName,
               members: listGenerator(),
               idProductList: idProduct
-
           }).then(response => {
               res.status(status.OK).json({ success: 200});
           }).catch(err => {
@@ -352,7 +347,7 @@ router.put('/removeMember', async (req, res) => {
         const member= await getPlayerInfo(req.body.uid)
 
         var db = firebase.firestore();
-        
+
         let ref = db.collection('family').doc(idFamily);
 
         let updateList = ref.update({

@@ -11,15 +11,15 @@ import { ToastService } from '../services/toast.service';
 })
 export class MainPage implements OnInit {
   datosUsuarioLoggedIn : any;
-  
+
   hasFamily = false;
   family: any;
   idFamilyList:string;
 
   constructor(private menu: MenuController,private back: BackService, private router: Router, private toast:ToastService) {
-    this.datosUsuarioLoggedIn = JSON.parse(localStorage.getItem('user'));  
+    this.datosUsuarioLoggedIn = JSON.parse(localStorage.getItem('user'));
 
-    
+
   }
 
   ionViewWillEnter(){
@@ -62,6 +62,14 @@ export class MainPage implements OnInit {
     .subscribe((data:any)=>{
       this.idFamilyList = data.data;
     });
+  }
+
+  goToCreateList(){
+    this.router.navigate(['/lista-compra']);
+  }
+
+  goToCreateProduct(){
+    this.router.navigate(['/create-product']);
   }
 
 }
