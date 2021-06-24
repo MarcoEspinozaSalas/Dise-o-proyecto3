@@ -25,6 +25,7 @@ import { LoadSpinnerService } from "./services/load-spinner.service";
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireStorageModule } from "@angular/fire/storage";
 
 //Socket
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
@@ -45,6 +46,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireDatabaseModule,
     AngularFirestoreModule,
+    AngularFireStorageModule
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     BackService,

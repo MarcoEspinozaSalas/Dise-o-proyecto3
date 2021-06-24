@@ -12,7 +12,7 @@ import { environment } from '../../environments/environment';
 import { removeMember } from '../models/removeMember';
 import { addMember } from '../models/addMember';
 import { productList } from '../models/productList';
-
+import { infoProduct } from '../models/product';
 
 @Injectable({
   providedIn: 'root',
@@ -88,5 +88,16 @@ export class BackService {
   ){
       return this.http.put(`${environment.urlRootBack}/removeMember`, data);
   }
+
+  getAllCategory(){
+    return this.http.get(`${environment.urlRootBack}/getAllCategory`);
+  }
+
+  postProduct(
+    data: infoProduct
+  ) {
+    return this.http.post(`${environment.urlRootBack}/createProduct`, data);
+  }
+
 
 }

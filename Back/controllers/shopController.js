@@ -488,4 +488,47 @@ router.get('/getAllCategory', async (req, res) => {
         res.status(status.INTERNAL_SERVER_ERROR).json({ error:err+' ', success:false });
     }
 });
+
+
+
+router.post('/createProduct', async (req, res) => {
+    const img = req.body.img;
+    const name = req.body.name;
+    const description = req.body.description;
+    const price = req.body.price;
+    const category = req.body.category;
+    var alreadyExist = false;
+    try {
+        var db = firebase.firestore();
+        await db.collection('Product')
+            .get()
+            .then(snapshot => {
+                snapshot.forEach(async doc => {
+                    if (await doc.data().name === name) {
+                        alreadyExist = true;
+                    }
+                });
+            });
+        if (!alreadyExist) {
+          db.collection('Product').add({
+              img: img,
+              name: name,
+              description: description,
+              price: price,
+              category: category
+          }).then(response => {
+              res.status(status.OK).json({ success: 200 });
+          }).catch(err => {
+              console.log(err);
+              res.status(status.INTERNAL_SERVER_ERROR).json({error:err + ' ', success:false});
+          });
+        }
+        else
+          res.status(status.OK).json({ message: 'Already Exist' });
+    } catch (err) {
+        console.log(err);
+        res.status(status.INTERNAL_SERVER_ERROR).json({error:err + ' ', success:false});
+    }
+});
+
 module.exports = router;

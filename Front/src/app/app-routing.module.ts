@@ -8,7 +8,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'create-product',
     pathMatch: 'full'
   },
   {
@@ -53,7 +53,7 @@ const routes: Routes = [
   },
   */
 
- 
+
 
 
 ];

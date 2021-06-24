@@ -25,6 +25,16 @@ export class ToastService {
     toast.present();
   }
 
+  async imgToast(text:string) {
+    let toast = await this.toastController.create({
+       message: text,
+       position: 'bottom',
+       duration: 2000
+     });
+     toast.present();
+   }
+
+
   async informationToast(message, type, header) {
     const toast = await this.toastController.create({
       message: message,
