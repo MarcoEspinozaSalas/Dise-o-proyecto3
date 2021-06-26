@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { BackService } from '../services/back.service';
+
 
 @Component({
   selector: 'app-lista-compra',
@@ -7,9 +9,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ListaCompraPage implements OnInit {
 
-  constructor() { }
+  listProducts = [];
+
+  constructor(public back: BackService) { }
 
   ngOnInit() {
+    this.back.getAllProduct()
+    .subscribe((data:any)=>{
+        this.listProducts = data.data;
+    });
+
   }
 
 }

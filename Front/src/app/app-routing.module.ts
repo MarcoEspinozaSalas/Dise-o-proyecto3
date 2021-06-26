@@ -8,7 +8,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'create-product',
+    redirectTo: 'home',
     pathMatch: 'full'
   },
   {

@@ -10,6 +10,26 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content fullscreen="true">
+  <h1 class="title">List of Products</h1>
 
+  <div class="cart-items">
+    <ion-card mode="ios" *ngFor="let item of listProducts">
+      <ion-card-content>
+        <div class="item-img">
+          <img [src]="item.img" />
+        </div>
+
+        <div class="item-info">
+          <p>{{item.name}}</p>
+          <p>{{item.description}}</p>
+          <p>${{item.price}}</p>
+
+          <div class="qty-selector">
+
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>

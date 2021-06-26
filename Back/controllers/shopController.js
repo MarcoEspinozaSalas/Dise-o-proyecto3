@@ -41,6 +41,27 @@ async function getPlayerInfo(uid) {
     }
 }
 
+async function getProductInfo(name) {
+
+    var product;
+
+    try {
+        var pool = firebase.firestore();
+        await pool.collection('Product').where('name', "==", name).
+            get().then(snapshot => {
+                snapshot.forEach(async doc => {
+                    product = await doc.data()
+                })
+            });
+
+        return product;
+    } catch (err) {
+        return undefined;
+    }
+}
+
+
+
 async function saveInformation(uid, email, displayName) {
 
     try {
@@ -414,7 +435,7 @@ router.put('/addProduct', async (req, res) => {
     try {
 
         const idList = req.body.idList;
-        const proName= await req.body.proName
+        const proName = await getPlayerInfo(req.body.proName)
 
         var db = firebase.firestore();
 
@@ -489,6 +510,28 @@ router.get('/getAllCategory', async (req, res) => {
     }
 });
 
+
+router.get('/getAllProduct', async (req, res) => {
+
+    try {
+
+        var pool = firebase.firestore();
+        const catRef = await pool.collection('Product');
+
+        var products = [];
+        await catRef.get().then((snapshot) => {
+
+            snapshot.forEach((doc) => {
+                products.push(doc.data());
+            })
+        });
+
+        res.status(status.OK).json({ data:products, success:true});
+
+    } catch {
+        res.status(status.INTERNAL_SERVER_ERROR).json({ error:err+' ', success:false });
+    }
+});
 
 
 router.post('/createProduct', async (req, res) => {

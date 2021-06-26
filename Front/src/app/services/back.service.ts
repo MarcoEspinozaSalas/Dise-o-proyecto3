@@ -93,11 +93,14 @@ export class BackService {
     return this.http.get(`${environment.urlRootBack}/getAllCategory`);
   }
 
+  getAllProduct(){
+    return this.http.get(`${environment.urlRootBack}/getAllProduct`);
+  }
+
   postProduct(
     data: infoProduct
   ) {
     return this.http.post(`${environment.urlRootBack}/createProduct`, data);
   }
-
 
 }
