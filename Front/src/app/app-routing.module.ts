@@ -8,7 +8,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'lista-compra',
     pathMatch: 'full'
   },
   {
@@ -38,6 +38,10 @@ const routes: Routes = [
   {
     path: 'create-product',
     loadChildren: () => import('./create-product/create-product.module').then( m => m.CreateProductPageModule)
+  },
+  {
+    path: 'list-market-modal',
+    loadChildren: () => import('./list-market-modal/list-market-modal.module').then( m => m.ListMarketModalPageModule)
   },
 
 

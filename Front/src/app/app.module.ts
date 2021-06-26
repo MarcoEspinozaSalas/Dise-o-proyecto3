@@ -12,6 +12,9 @@ import { AppRoutingModule } from './app-routing.module';
 
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+
+import { ListMarketModalPage } from "./list-market-modal/list-market-modal.page";
+
 //Envioronment
 import { environment } from '../environments/environment';
 
@@ -47,6 +50,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     AngularFireDatabaseModule,
     AngularFirestoreModule,
     AngularFireStorageModule
+    
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     BackService,

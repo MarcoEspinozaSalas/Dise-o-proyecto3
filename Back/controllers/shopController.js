@@ -558,7 +558,8 @@ router.post('/createProduct', async (req, res) => {
               name: name,
               description: description,
               price: price,
-              category: category
+              category: category,
+              cantidad: 1
           }).then(response => {
               res.status(status.OK).json({ success: 200 });
           }).catch(err => {

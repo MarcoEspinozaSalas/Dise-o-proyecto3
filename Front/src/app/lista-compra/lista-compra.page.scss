@@ -48,3 +48,30 @@
         }
     }
 }
+
+.addButton{
+  margin-right: -50px;
+}
+
+.centerContent{
+  align-items: center;
+}
+
+
+ion-fab-button {
+  height: 60px;
+  width: 60px;
+}
+
+.list-icon {
+  font-size: 40px;
+}
+
+.list-length {
+  color: white;
+  position: absolute;
+  font-weight: 600;
+  font-size: 1em;
+  min-width: 25px;
+  z-index: 10;
+}

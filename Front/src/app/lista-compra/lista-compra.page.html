@@ -13,9 +13,16 @@
 <ion-content fullscreen="true">
   <h1 class="title">List of Products</h1>
 
+  <ion-fab vertical="top" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="openListMarket()" #listMarket>
+      <ion-icon name="clipboard-outline" class="list-icon"></ion-icon>
+      <div class="list-length">{{ listItemCount | async }}</div>
+    </ion-fab-button>
+  </ion-fab>
+
   <div class="cart-items">
     <ion-card mode="ios" *ngFor="let item of listProducts">
-      <ion-card-content>
+      <ion-card-content class="centerContent">
         <div class="item-img">
           <img [src]="item.img" />
         </div>
@@ -29,6 +36,9 @@
 
           </div>
         </div>
+        <ion-button fill="clear" (click)="addToListMarket(item)" class="addButton">
+          <ion-icon name="add"></ion-icon>
+        </ion-button>
       </ion-card-content>
     </ion-card>
   </div>
