@@ -80,7 +80,7 @@ export class LoginPage implements OnInit {
       this.backService.postPlayer(this.dataUser)
         .subscribe((data:any)=>{
           if (data.FamilyList == undefined) {
-            localStorage.setItem('FamilyList',JSON.stringify(''))
+            //localStorage.setItem('FamilyList',JSON.stringify(''))
             localStorage.setItem('ListName',JSON.stringify(''))
           }else {
             localStorage.setItem('FamilyList',JSON.stringify(data.FamilyList))

@@ -13,6 +13,8 @@ import { removeMember } from '../models/removeMember';
 import { addMember } from '../models/addMember';
 import { productList } from '../models/productList';
 import { infoProduct } from '../models/product';
+import { addIdToFamily } from '../models/addIdToFamily';
+import { productToList } from '../models/productToList';
 
 @Injectable({
   providedIn: 'root',
@@ -54,9 +56,12 @@ export class BackService {
 
 
   createProductList(
-    idFamilyOwner: productList
+    idListOwner: any
   ){
-    return this.http.post(`${environment.urlRootBack}/createProductList`, idFamilyOwner);
+    let test = {
+      idListOwner: idListOwner
+    }
+    return this.http.post(`${environment.urlRootBack}/createProductList`, test);
   }
 
   getFL(
@@ -101,6 +106,20 @@ export class BackService {
     data: infoProduct
   ) {
     return this.http.post(`${environment.urlRootBack}/createProduct`, data);
+  }
+
+  getProductListId(
+   idListOwner: string
+ ){
+   return this.http.get(`${environment.urlRootBack}/getProductListId?idListOwner=${idListOwner}`);
+ }
+
+  addProductListId( data: addIdToFamily){
+    return this.http.put(`${environment.urlRootBack}/addProductListId`, data);
+  }
+
+  addProductToList( data: productToList){
+    return this.http.put(`${environment.urlRootBack}/addProduct`, data);
   }
 
 }

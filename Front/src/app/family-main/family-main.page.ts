@@ -77,7 +77,7 @@ export class FamilyMainPage implements OnInit {
 
   createProductList() {
     var id ="";
-    this.productList.idFamilyOwner = this.datosUsuarioLoggedIn.user.uid;
+    this.productList.idListOwner = this.datosUsuarioLoggedIn.user.uid;
       this.back.createProductList(this.productList)
       .subscribe((data:any)=>{
         if (data.success) {

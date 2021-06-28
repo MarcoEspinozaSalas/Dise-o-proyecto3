@@ -23,6 +23,7 @@ import { BackService } from './services/back.service';
 import { FirebaseService } from './services/firebase.service';
 import { ToastService } from "./services/toast.service";
 import { LoadSpinnerService } from "./services/load-spinner.service";
+import { PassDataService } from "./services/pass-data.service";
 
 // import firebase module
 import { AngularFireModule } from '@angular/fire';
@@ -50,12 +51,12 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     AngularFireDatabaseModule,
     AngularFirestoreModule,
     AngularFireStorageModule
-    
+
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     BackService,
     FirebaseService,
-    ToastService, LoadSpinnerService],
+    ToastService, LoadSpinnerService, PassDataService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

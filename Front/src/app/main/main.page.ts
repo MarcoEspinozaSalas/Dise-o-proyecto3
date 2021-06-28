@@ -18,11 +18,25 @@ export class MainPage implements OnInit {
 
   constructor(private menu: MenuController,private back: BackService, private router: Router, private toast:ToastService) {
     this.datosUsuarioLoggedIn = JSON.parse(localStorage.getItem('user'));
-
-
+    this.back.getFamilyId(this.datosUsuarioLoggedIn.user.uid)
+    .subscribe((data:any)=>{
+      localStorage.setItem('FamilyList',JSON.stringify(data.data))
+    });
+    this.back.getProductListId(this.datosUsuarioLoggedIn.user.uid)
+    .subscribe((data:any)=>{
+      localStorage.setItem('ProductList',JSON.stringify(data.data))
+    });
   }
 
   ionViewWillEnter(){
+    this.back.getFamilyId(this.datosUsuarioLoggedIn.user.uid)
+    .subscribe((data:any)=>{
+      localStorage.setItem('FamilyList',JSON.stringify(data.data))
+    });
+    this.back.getProductListId(this.datosUsuarioLoggedIn.user.uid)
+    .subscribe((data:any)=>{
+      localStorage.setItem('ProductList',JSON.stringify(data.data))
+    });
     this.verify();
   }
 

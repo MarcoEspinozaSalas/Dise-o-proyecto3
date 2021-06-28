@@ -17,6 +17,7 @@ export class HomePage {
 
   constructor(private back: BackService, private firebaseService: FirebaseService) {
     this.datosUsuarioLoggedIn = JSON.parse(localStorage.getItem('user'));
+
     if (this.datosUsuarioLoggedIn != null) {
       this.firebaseService.signOut();
     }

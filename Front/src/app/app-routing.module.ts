@@ -8,7 +8,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'lista-compra',
+    redirectTo: 'home',
     pathMatch: 'full'
   },
   {

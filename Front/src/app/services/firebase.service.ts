@@ -72,6 +72,7 @@ export class FirebaseService {
     localStorage.removeItem('FamilyList')
     localStorage.removeItem('FamilyListName')
     localStorage.removeItem('ListName')
+    localStorage.removeItem('ProductList')
     this.router.navigate(['/home'],{replaceUrl : true});
   }
 

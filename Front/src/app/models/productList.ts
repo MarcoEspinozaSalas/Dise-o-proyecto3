@@ -1,3 +1,3 @@
 export class productList {
-   idFamilyOwner: string;
+   idListOwner: string;
 }

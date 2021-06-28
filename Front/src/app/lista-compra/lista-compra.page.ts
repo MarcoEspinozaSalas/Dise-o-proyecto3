@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import { BackService } from '../services/back.service';
 import { BehaviorSubject } from 'rxjs';
-import { ModalController } from '@ionic/angular';
+import { ModalController, AlertController } from '@ionic/angular';
 import { ListMarketModalPage } from "../list-market-modal/list-market-modal.page";
+import { PassDataService } from '../services/pass-data.service';
 
 @Component({
   selector: 'app-lista-compra',
@@ -11,48 +12,29 @@ import { ListMarketModalPage } from "../list-market-modal/list-market-modal.page
 })
 export class ListaCompraPage implements OnInit {
 
+  @ViewChild('listMarket', {static: false, read: ElementRef})fab: ElementRef;
+
   listMarket = [];
 
   listProducts = [];
 
-  listItemCount = new BehaviorSubject(0);
+  listItemCount: BehaviorSubject<number>;
 
-  constructor(public back: BackService, public modalCtrl: ModalController) { }
+  constructor(public back: BackService, public modalCtrl: ModalController,public passData: PassDataService,
+  private alertCtrl: AlertController) { }
 
   ngOnInit() {
     this.back.getAllProduct()
     .subscribe((data:any)=>{
         this.listProducts = data.data;
     });
-  }
-
-//Services
-  addProduct(product){
-
-  }
-
-  decreaseProcut(product){
-
-  }
-
-  removeProduct(product){
-
+    this.listMarket = this.passData.getList();
+    this.listItemCount = this.passData.getItemCount();
   }
 
 //Component
  addToListMarket(product){
-   let added = false;
-   for (let p of this.listMarket) {
-     if (p.name === product.name) {
-       p.cantidad += 1;
-       added = true;
-       break;
-     }
-   }
-   if (!added) {
-     this.listMarket.push(product);
-   }
-   this.listItemCount.next(this.listItemCount.value + 1);
+   this.passData.addProduct(product);
  }
 
   async openListMarket(){
@@ -62,5 +44,6 @@ export class ListaCompraPage implements OnInit {
    });
    modal.present();
  }
+
 
 }

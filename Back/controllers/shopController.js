@@ -81,20 +81,63 @@ async function saveInformation(uid, email, displayName) {
 
 
 router.post('/createProductList', async (req, res) => {
-    const idFamilyOwner = await getPlayerInfo(req.body.idFamilyOwner)
+    const idListOwner = await getPlayerInfo(req.body.idListOwner)
+    try {
+        var alreadyExist = true;
+        var db = firebase.firestore();
+        var idList = '';
+
+        await db.collection('productList')
+            .get()
+            .then(snapshot => {
+                snapshot.forEach(async doc => {
+                    if (await doc.data().idListOwner.uid === idListOwner.uid) {
+                        alreadyExist = false;
+                        idList= doc.id;
+                    }
+                });
+            });
+
+        if (alreadyExist) {
+          await db.collection('productList').add({
+              idListOwner: idListOwner,
+              products: listGenerator()
+          }).then(data => {
+                  res.status(status.OK).json({ data:data.id, success:true});
+              }).catch(err => {
+                  res.status(status.INTERNAL_SERVER_ERROR).json({ error: err+" ", success:false});
+              });
+        }
+        res.status(status.OK).json({data:idList, success:true});
+    } catch (err) {
+        res.status(status.INTERNAL_SERVER_ERROR).json({ error: err+" ", success:false});
+    }
+});
+
+
+
+router.get('/getProductListId', async (req, res) => {
+
+    const idListOwner = req.query.idListOwner;
+
     try {
 
         var db = firebase.firestore();
-        await db.collection('productList').add({
-            idListOwner: idFamilyOwner,
-            products: listGenerator()
-        }).then(data => {
-                res.status(status.OK).json({ data:data.id, success:true});
-            }).catch(err => {
-                res.status(status.INTERNAL_SERVER_ERROR).json({ error: err+" ", success:false});
-            });
+
+        var data = '';
+
+        db.collection('productList').where('idListOwner.uid', "==", idListOwner).get()
+        .then(snapshot => {
+          snapshot.forEach(async doc => {
+            data = doc.id;
+          });
+            res.status(status.OK).json({data:data, success:true});
+        }).catch(err => {
+            res.status(status.INTERNAL_SERVER_ERROR).json({error:err+' ', success:false});
+        });
+
     } catch (err) {
-        res.status(status.INTERNAL_SERVER_ERROR).json({ error: err+" ", success:false});
+        res.status(status.INTERNAL_SERVER_ERROR).json({error:err+' ', success:false});
     }
 });
 
@@ -317,7 +360,7 @@ router.put('/addProductListId', async (req, res) => {
     try {
 
         const idFamily = req.body.idFamily;
-        const idProductList = req.body.idProductList
+        const idProductList = req.body.idProductList;
 
         var db = firebase.firestore();
 
@@ -435,7 +478,7 @@ router.put('/addProduct', async (req, res) => {
     try {
 
         const idList = req.body.idList;
-        const proName = await getPlayerInfo(req.body.proName)
+        const proName = await getProductInfo(req.body.proName)
 
         var db = firebase.firestore();
 
