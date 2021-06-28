@@ -18,7 +18,11 @@ export class ListaCompraPage implements OnInit {
 
   listProducts = [];
 
+  listProductsFiltered = [];
+
   listItemCount: BehaviorSubject<number>;
+
+  listCategory = [];
 
   constructor(public back: BackService, public modalCtrl: ModalController,public passData: PassDataService,
   private alertCtrl: AlertController) { }
@@ -27,9 +31,14 @@ export class ListaCompraPage implements OnInit {
     this.back.getAllProduct()
     .subscribe((data:any)=>{
         this.listProducts = data.data;
+        this.listProductsFiltered = this.listProducts;
     });
     this.listMarket = this.passData.getList();
     this.listItemCount = this.passData.getItemCount();
+    this.back.getAllCategory()
+    .subscribe((data:any)=>{
+        this.listCategory = data.data
+    });
   }
 
 //Component
@@ -43,6 +52,15 @@ export class ListaCompraPage implements OnInit {
      cssClass: 'listMarket-modal'
    });
    modal.present();
+ }
+
+ filtrar($event){
+   this.listProductsFiltered = [];
+   for (let item of this.listProducts) {
+     if (item.category.name == $event.target.value.name) {
+       this.listProductsFiltered.push(item);
+     }
+   }
  }
 
 

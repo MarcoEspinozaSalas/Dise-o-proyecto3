@@ -122,4 +122,10 @@ export class BackService {
     return this.http.put(`${environment.urlRootBack}/addProduct`, data);
   }
 
+  getMarketList(
+   idListOwner: string
+ ){
+   return this.http.get(`${environment.urlRootBack}/getListMarket?idListOwner=${idListOwner}`);
+ }
+
 }

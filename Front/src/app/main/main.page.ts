@@ -86,4 +86,8 @@ export class MainPage implements OnInit {
     this.router.navigate(['/create-product']);
   }
 
+  goToList(){
+    this.router.navigate(['/ver-lista']);
+  }
+
 }

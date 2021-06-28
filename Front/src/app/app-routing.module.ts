@@ -43,6 +43,10 @@ const routes: Routes = [
     path: 'list-market-modal',
     loadChildren: () => import('./list-market-modal/list-market-modal.module').then( m => m.ListMarketModalPageModule)
   },
+  {
+    path: 'ver-lista',
+    loadChildren: () => import('./ver-lista/ver-lista.module').then( m => m.VerListaPageModule)
+  },
 
 
 

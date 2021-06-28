@@ -618,4 +618,41 @@ router.post('/createProduct', async (req, res) => {
     }
 });
 
+
+router.get('/getListMarket', async (req, res) => {
+
+    try {
+
+         const idListOwner = req.query.idListOwner;
+
+          var listMarket;
+
+          try {
+
+              var pool = firebase.firestore();
+              await pool.collection('productList')
+              .get()
+              .then(snapshot => {
+                  snapshot.forEach(async doc => {
+                      if (await doc.data().idListOwner.uid === idListOwner) {
+                          listMarket = doc.data();
+                      }
+                  });
+              });
+
+          } catch (err) {
+              res.status(status.OK).json({success:true});
+          }
+
+        res.status(status.OK).json({ data:listMarket, success:true});
+
+    } catch {
+        res.status(status.INTERNAL_SERVER_ERROR).json({ error:err+' ', success:false });
+    }
+});
+
+
+
+
+
 module.exports = router;
